@@ -1,37 +1,34 @@
 services:
-  suppliers-front:
-    build: .
+  # suppliers-front:
+  #   build: 
+  #     dockerfile : fronts/suppliers-front.Dockerfile
+  #   ports:
+  #     - 3000
+  # store-front:
+  #   build: 
+  #     dockerfile : fronts/store-front.Dockerfile
+  #   ports:
+  #     - 3001
+  # sso-front:
+  #   build: 
+  #     dockerfile : fronts/sso-front.Dockerfile
+  #   ports:
+  #     - 3002
+  catalog-api:
+    build: 
+      dockerfile : apis/catalog-api.Dockerfile
     ports:
-      -8001
-  store-front:
-    build: .
+       - "3500:80"
+  command-api:
+    build: 
+      dockerfile : apis/command-api.Dockerfile
     ports:
-      -8002
-  sso-front:
-    build: .
-    ports:
-      -8003
-  api-catalog:
-    build: .
-    ports:
-      -5001
-  postgres-catalog:
-    image: postgres:latest
-    ports:
-      -'27017:27017'
-  api-commands:
-    build: .
-    ports:
-      -5002
-  postgres-commands:
-    image: postgres:latest
-    ports:
-      -'27018:27017'
-  interface-rest-soap:
-    build: .
-    ports:
-      -5003
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest #TODO: verify ?
-    ports:
-      - 8004:8080
+       - "3600:80"
+  # postgres-catalog:
+  #   image: postgres:latest
+  #   ports:
+  #     - '27017:27017'
+  # postgres-commands:
+  #   image: postgres:latest
+  #   ports:
+  #     - '27018:27017'
