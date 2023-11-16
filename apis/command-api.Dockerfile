@@ -11,10 +11,10 @@ COPY ["apis/command-api/command-api.csproj", "command-api/"]
 RUN dotnet restore "command-api/command-api.csproj"
 COPY . .
 WORKDIR "/src/command-api"
-RUN dotnet build "command-api.csproj" -c Release -o /app/build 
+RUN dotnet build "command-api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish -c Release --self-contained --runtime linux-x64 -o out
+RUN dotnet publish "command-api.csproj" -c Release -o /app/publish --self-contained
 
 FROM base AS final
 WORKDIR /app
