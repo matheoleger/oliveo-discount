@@ -1,22 +1,24 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Use the official .NET Core SDK as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
+
+# Copy the project file and restore any dependencies (use .csproj for the project name)
+COPY apis/command-api/command-api.csproj ./
+RUN dotnet restore
+
+# Copy the rest of the application code
+COPY apis/command-api/ .
+
+# Publish the application
+RUN dotnet publish "command-api.csproj" -c Release -o out
+
+# Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
+
+# Expose the port your application will run on
 EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["apis/command-api/command-api.csproj", "command-api/"]
-RUN dotnet restore "command-api/command-api.csproj"
-COPY . .
-WORKDIR "/src/command-api"
-RUN dotnet build "command-api.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "command-api.csproj" -c Release -o /app/publish --self-contained
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+# Start the application
 ENTRYPOINT ["dotnet", "command-api.dll"]

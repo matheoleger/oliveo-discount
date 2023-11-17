@@ -19,11 +19,11 @@ services:
       dockerfile : apis/catalog-api.Dockerfile
     ports:
        - "3500:80"
-  # command-api:
-  #   build: 
-  #     dockerfile : apis/command-api.Dockerfile
-  #   ports:
-  #      - "3600:80"
+  command-api:
+    build: 
+      dockerfile : apis/command-api.Dockerfile
+    ports:
+       - "3600:80"
   # postgres-catalog:
   #   image: postgres:latest
   #   ports:
