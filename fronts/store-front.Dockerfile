@@ -1,13 +1,13 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-WORKDIR /fronts/store-front
+WORKDIR /store-front
 
-COPY package*.json ./
+COPY /fronts/store-front/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY /fronts/store-front .
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD npm run dev

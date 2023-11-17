@@ -1,19 +1,19 @@
 services:
-  # suppliers-front:
-  #   build: 
-  #     dockerfile : fronts/suppliers-front.Dockerfile
-  #   ports:
-  #     - 3000
-  # store-front:
-  #   build: 
-  #     dockerfile : fronts/store-front.Dockerfile
-  #   ports:
-  #     - 3001
-  # sso-front:
-  #   build: 
-  #     dockerfile : fronts/sso-front.Dockerfile
-  #   ports:
-  #     - 3002
+  suppliers-front:
+    build: 
+      dockerfile : fronts/suppliers-front.Dockerfile
+    ports: 
+      - "3000:3000"
+  store-front:
+    build: 
+      dockerfile : fronts/store-front.Dockerfile
+    ports: 
+      - "3001:3000"
+  sso-front:
+    build: 
+      dockerfile : fronts/sso-front.Dockerfile
+    ports:
+      - "3002:3000"
   catalog-api:
     build: 
       dockerfile : apis/catalog-api.Dockerfile

@@ -1,13 +1,13 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-WORKDIR /fronts/sso-front
+WORKDIR /sso-front
 
-COPY package*.json ./
+COPY /fronts/sso-front/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY /fronts/sso-front .
 
-EXPOSE 3002
+EXPOSE 3000
 
 CMD npm run dev

@@ -1,12 +1,12 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-WORKDIR /fronts/suppliers-front
+WORKDIR /suppliers-front
 
-COPY package*.json ./
+COPY /fronts/suppliers-front/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY /fronts/suppliers-front .
 
 EXPOSE 3000
 
