@@ -9,6 +9,9 @@ RUN dotnet restore
 # Copy the rest of the application code
 COPY apis/catalog-api/ .
 
+# Migrations
+RUN dotnet ef database update
+
 # Publish the application
 RUN dotnet publish "catalog-api.csproj" -c Release -o out
 

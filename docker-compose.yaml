@@ -19,6 +19,8 @@ services:
       dockerfile : apis/catalog-api.Dockerfile
     ports:
        - "3500:80"
+    depends_on:
+       - "postgres-catalog" 
   command-api:
     build: 
       dockerfile : apis/command-api.Dockerfile
