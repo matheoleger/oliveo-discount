@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using catalog_api.Models;
 using catalog_api.Data;
+using catalog_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-// builder.Services.AddDbContext<CatalogDbContext>(opt =>
-//     opt.UseInMemoryDatabase("Catalog"));
 
 builder.Services.AddDbContext<CatalogDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -18,6 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+DatabaseManagementService.MigrationInitialisation(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
