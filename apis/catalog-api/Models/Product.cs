@@ -4,7 +4,7 @@ namespace catalog_api.Models;
 
 public class Product 
 {
-    [Key] public string Id { get; set; } = string.Empty;
+    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public int Stock { get; set; }
     public string CategoryId { get; set; } = string.Empty;

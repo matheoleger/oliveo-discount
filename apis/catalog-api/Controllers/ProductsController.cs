@@ -14,13 +14,6 @@ namespace catalog_api.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        // private readonly ProductContext _context;
-
-        // public ProductsController(ProductContext context)
-        // {
-        //     _context = context;
-        // }
-
         private readonly CatalogDbContext _context;
 
         public ProductsController(CatalogDbContext context)
@@ -60,7 +53,7 @@ namespace catalog_api.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(string id, Product product)
+        public async Task<IActionResult> PutProduct(Guid id, Product product)
         {
             if (id != product.Id)
             {
@@ -123,7 +116,7 @@ namespace catalog_api.Controllers
             return NoContent();
         }
 
-        private bool ProductExists(string id)
+        private bool ProductExists(Guid id)
         {
             return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }

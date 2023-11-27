@@ -1,3 +1,7 @@
+
+volumes:
+  postgres_data:
+
 services:
   suppliers-front:
     build: 
@@ -13,28 +17,34 @@ services:
     build: 
       dockerfile : fronts/sso-front.Dockerfile
     ports:
-      - "3002:3000"
+      - "3002:3000" 
+
+  postgres-catalog:
+    image: postgres:latest
+    ports:
+      - '2345:5432'
+    env_file:
+      - 'postgres.env'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   catalog-api:
     build: 
-      dockerfile : apis/catalog-api.Dockerfile
+      dockerfile: apis/catalog-api.Dockerfile
     ports:
-       - "3500:80"
+      - "3500:80"
     depends_on:
-       - "postgres-catalog" 
+      - "postgres-catalog"
+
   command-api:
     build: 
       dockerfile : apis/command-api.Dockerfile
     ports:
        - "3600:80"
-  postgres-catalog:
-    image: postgres:latest
-    ports:
-      - '27017:27017'
-    env_file:
-      - 'postgres.env'
+  
   postgres-commands:
     image: postgres:latest
     ports:
-      - '27018:27017'
+      - '2346:5432'
     env_file:
       - 'postgres.env'
