@@ -1,13 +1,15 @@
 FROM node:18-alpine
 
-WORKDIR /suppliers-front
+RUN mkdir -p /app
 
-COPY /fronts/suppliers-front/package*.json ./
+WORKDIR /app
 
-RUN npm install
+COPY /fronts/suppliers-front/package*.json /app
 
-COPY /fronts/suppliers-front .
+RUN yarn install
+
+COPY ./fronts/suppliers-front /app
 
 EXPOSE 3000
 
-CMD npm run dev
+CMD ["yarn", "dev"]
