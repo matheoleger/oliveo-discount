@@ -1,19 +1,32 @@
+volumes:
+  postgres_data:
+      driver: local
+
 services:
   suppliers-front:
     build: 
       dockerfile : fronts/suppliers-front.Dockerfile
     ports: 
       - "3000:3000"
+    volumes:
+      - ./fronts/suppliers-front:/app
+      - /app/node_modules
+    environment:
+      - KEYCLOAK_URL=myurl
+      - KEYCLOAK_CLIENT=myclient
+      - KEYCLOAK_REALM=myreaml
   store-front:
     build: 
       dockerfile : fronts/store-front.Dockerfile
     ports: 
       - "3001:3000"
-  sso-front:
-    build: 
-      dockerfile : fronts/sso-front.Dockerfile
-    ports:
-      - "3002:3000"
+    volumes:
+      - ./fronts/store-front:/app
+      - /app/node_modules
+    environment:
+      - KEYCLOAK_URL=myurl
+      - KEYCLOAK_CLIENT=myclient
+      - KEYCLOAK_REALM=myreaml
   catalog-api:
     build: 
       dockerfile : apis/catalog-api.Dockerfile
@@ -36,3 +49,26 @@ services:
       - '27018:27017'
     env_file:
       - 'postgres.env'
+  postgres-keycloak:
+      image: postgres:latest
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_DB: keycloak
+        POSTGRES_USER: keycloak
+        POSTGRES_PASSWORD: password
+  keycloak:
+      image: quay.io/keycloak/keycloak:legacy
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: postgres-keycloak
+        DB_DATABASE: keycloak
+        DB_USER: keycloak
+        DB_SCHEMA: public
+        DB_PASSWORD: password
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: admin
+      ports:
+        - 8080:8080
+      depends_on:
+        - postgres-keycloak
