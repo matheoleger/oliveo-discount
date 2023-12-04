@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using catalog_api.Models;
 using catalog_api.Data;
+using catalog_api.Models;
 
 namespace catalog_api.Controllers
 {
@@ -23,18 +23,26 @@ namespace catalog_api.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(Guid? categoryId)
         {
           if (_context.Products == null)
           {
               return NotFound();
           }
-            return await _context.Products.ToListAsync();
+
+            List<Product> products = (categoryId != null) ?
+            _context.Products.Where(product => product.CategoryId == categoryId).ToList()
+            :
+            await _context.Products.ToListAsync();
+
+            products.ForEach(product => product.Category = _context.Categories.Find(product.CategoryId));
+
+            return products;
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(long id)
+        public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
           if (_context.Products == null)
           {
@@ -46,6 +54,8 @@ namespace catalog_api.Controllers
             {
                 return NotFound();
             }
+
+            product.Category = await _context.Categories.FindAsync(product.CategoryId);
 
             return product;
         }
@@ -88,8 +98,19 @@ namespace catalog_api.Controllers
         {
           if (_context.Products == null)
           {
-              return Problem("Entity set 'ProductContext.Products'  is null.");
+              return Problem("Entity set 'CatalogDbContext.Products'  is null.");
           }
+
+            Console.WriteLine(product);
+            Category currentCategory = await _context.Categories.FindAsync(product.CategoryId);
+            // currentCategory.Products.Append<Product>(product);
+            
+            Console.WriteLine("PRODUIIIIIIIIIIIIIIIIIIIIIIIIT");
+            Console.WriteLine(currentCategory?.Id);
+
+            if(currentCategory?.Id != null)
+                product.Category = currentCategory;
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
@@ -98,7 +119,7 @@ namespace catalog_api.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(long id)
+        public async Task<IActionResult> DeleteProduct(Guid id)
         {
             if (_context.Products == null)
             {
