@@ -20,5 +20,7 @@ COPY --from=build /app/out ./
 # Expose the port your application will run on
 EXPOSE 80
 
-# Start the application
+# # Start the application
 ENTRYPOINT ["dotnet", "catalog-api.dll"]
+
+

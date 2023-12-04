@@ -1,8 +1,35 @@
 volumes:
-  postgres_data:
-      driver: local
+  postgres_catalog_volume:
+  postgres_command_volume:
+  postgres_keycloak_volume:
+    driver: local
 
 services:
+  postgres-keycloak:
+    image: postgres:latest
+    volumes:
+      - postgres_keycloak_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+
+  postgres-commands:
+    image: postgres:latest
+    ports:
+      - '2346:5432'
+    env_file:
+      - 'postgres.env'
+
+  postgres-catalog:
+    image: postgres:latest
+    ports:
+      - '2345:5432'
+    env_file:
+      - 'postgres.env'
+    volumes:
+      - postgres_catalog_volume:/var/lib/postgresql/data
+
   suppliers-front:
     build: 
       dockerfile : fronts/suppliers-front.Dockerfile
@@ -15,6 +42,7 @@ services:
       - KEYCLOAK_URL=myurl
       - KEYCLOAK_CLIENT=myclient
       - KEYCLOAK_REALM=myreaml
+
   store-front:
     build: 
       dockerfile : fronts/store-front.Dockerfile
@@ -27,48 +55,33 @@ services:
       - KEYCLOAK_URL=myurl
       - KEYCLOAK_CLIENT=myclient
       - KEYCLOAK_REALM=myreaml
+
   catalog-api:
     build: 
-      dockerfile : apis/catalog-api.Dockerfile
+      dockerfile: apis/catalog-api.Dockerfile
     ports:
-       - "3500:80"
+      - "3500:80"
+    depends_on:
+      - "postgres-catalog"
+
   command-api:
     build: 
       dockerfile : apis/command-api.Dockerfile
     ports:
        - "3600:80"
-  postgres-catalog:
-    image: postgres:latest
-    ports:
-      - '27017:27017'
-    env_file:
-      - 'postgres.env'
-  postgres-commands:
-    image: postgres:latest
-    ports:
-      - '27018:27017'
-    env_file:
-      - 'postgres.env'
-  postgres-keycloak:
-      image: postgres:latest
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      environment:
-        POSTGRES_DB: keycloak
-        POSTGRES_USER: keycloak
-        POSTGRES_PASSWORD: password
+
   keycloak:
-      image: quay.io/keycloak/keycloak:legacy
-      environment:
-        DB_VENDOR: POSTGRES
-        DB_ADDR: postgres-keycloak
-        DB_DATABASE: keycloak
-        DB_USER: keycloak
-        DB_SCHEMA: public
-        DB_PASSWORD: password
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: admin
-      ports:
-        - 8080:8080
-      depends_on:
-        - postgres-keycloak
+    image: quay.io/keycloak/keycloak:legacy
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres-keycloak
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres-keycloak
