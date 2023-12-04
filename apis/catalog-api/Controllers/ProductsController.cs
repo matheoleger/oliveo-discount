@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using catalog_api.Data;
@@ -23,7 +20,7 @@ namespace catalog_api.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(Guid? categoryId)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(Guid? categoryId, bool? getCategory)
         {
           if (_context.Products == null)
           {
@@ -35,14 +32,15 @@ namespace catalog_api.Controllers
             :
             await _context.Products.ToListAsync();
 
-            products.ForEach(product => product.Category = _context.Categories.Find(product.CategoryId));
+            if (getCategory == true)
+                products.ForEach(product => product.Category = _context.Categories.Find(product.CategoryId));
 
             return products;
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public async Task<ActionResult<Product>> GetProduct(Guid id, bool? getCategory)
         {
           if (_context.Products == null)
           {
@@ -55,7 +53,8 @@ namespace catalog_api.Controllers
                 return NotFound();
             }
 
-            product.Category = await _context.Categories.FindAsync(product.CategoryId);
+            if (getCategory == true)
+                product.Category = await _context.Categories.FindAsync(product.CategoryId);
 
             return product;
         }
@@ -101,13 +100,8 @@ namespace catalog_api.Controllers
               return Problem("Entity set 'CatalogDbContext.Products'  is null.");
           }
 
-            Console.WriteLine(product);
             Category currentCategory = await _context.Categories.FindAsync(product.CategoryId);
-            // currentCategory.Products.Append<Product>(product);
             
-            Console.WriteLine("PRODUIIIIIIIIIIIIIIIIIIIIIIIIT");
-            Console.WriteLine(currentCategory?.Id);
-
             if(currentCategory?.Id != null)
                 product.Category = currentCategory;
 

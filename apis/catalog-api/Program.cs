@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using catalog_api.Models;
 using catalog_api.Data;
 using catalog_api.Services;
 using System.Text.Json.Serialization;
@@ -16,12 +15,6 @@ builder.Services.AddDbContext<CatalogDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
-// System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles = true;
-
-// JsonSerializerOptions.Configure(options => options.ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 
