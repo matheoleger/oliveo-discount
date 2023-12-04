@@ -1,23 +1,44 @@
-
 volumes:
-  postgres_data:
+  postgres_catalog_volume:
+  postgres_command_volume:
+  postgres_keycloak_volume:
+    driver: local
 
 services:
+  postgres-keycloak:
+    image: postgres:latest
+    volumes:
+      - postgres_keycloak_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+
   suppliers-front:
     build: 
       dockerfile : fronts/suppliers-front.Dockerfile
     ports: 
       - "3000:3000"
+    volumes:
+      - ./fronts/suppliers-front:/app
+      - /app/node_modules
+    environment:
+      - KEYCLOAK_URL=myurl
+      - KEYCLOAK_CLIENT=myclient
+      - KEYCLOAK_REALM=myreaml
+
   store-front:
     build: 
       dockerfile : fronts/store-front.Dockerfile
     ports: 
       - "3001:3000"
-  sso-front:
-    build: 
-      dockerfile : fronts/sso-front.Dockerfile
-    ports:
-      - "3002:3000" 
+    volumes:
+      - ./fronts/store-front:/app
+      - /app/node_modules
+    environment:
+      - KEYCLOAK_URL=myurl
+      - KEYCLOAK_CLIENT=myclient
+      - KEYCLOAK_REALM=myreaml
 
   postgres-catalog:
     image: postgres:latest
@@ -26,7 +47,7 @@ services:
     env_file:
       - 'postgres.env'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_catalog_volume:/var/lib/postgresql/data
 
   catalog-api:
     build: 
@@ -36,15 +57,31 @@ services:
     depends_on:
       - "postgres-catalog"
 
-  command-api:
-    build: 
-      dockerfile : apis/command-api.Dockerfile
-    ports:
-       - "3600:80"
-  
   postgres-commands:
     image: postgres:latest
     ports:
       - '2346:5432'
     env_file:
       - 'postgres.env'
+
+  command-api:
+    build: 
+      dockerfile : apis/command-api.Dockerfile
+    ports:
+       - "3600:80"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres-keycloak
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres-keycloak
