@@ -14,6 +14,22 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
 
+  postgres-commands:
+    image: postgres:latest
+    ports:
+      - '2346:5432'
+    env_file:
+      - 'postgres.env'
+
+  postgres-catalog:
+    image: postgres:latest
+    ports:
+      - '2345:5432'
+    env_file:
+      - 'postgres.env'
+    volumes:
+      - postgres_catalog_volume:/var/lib/postgresql/data
+
   suppliers-front:
     build: 
       dockerfile : fronts/suppliers-front.Dockerfile
@@ -40,15 +56,6 @@ services:
       - KEYCLOAK_CLIENT=myclient
       - KEYCLOAK_REALM=myreaml
 
-  postgres-catalog:
-    image: postgres:latest
-    ports:
-      - '2345:5432'
-    env_file:
-      - 'postgres.env'
-    volumes:
-      - postgres_catalog_volume:/var/lib/postgresql/data
-
   catalog-api:
     build: 
       dockerfile: apis/catalog-api.Dockerfile
@@ -56,13 +63,6 @@ services:
       - "3500:80"
     depends_on:
       - "postgres-catalog"
-
-  postgres-commands:
-    image: postgres:latest
-    ports:
-      - '2346:5432'
-    env_file:
-      - 'postgres.env'
 
   command-api:
     build: 
