@@ -38,6 +38,8 @@ services:
     volumes:
       - ./fronts/suppliers-front:/app
       - /app/node_modules
+    env_file:
+      - '.front.env'
     environment:
       - KEYCLOAK_URL=myurl
       - KEYCLOAK_CLIENT=myclient
@@ -51,6 +53,8 @@ services:
     volumes:
       - ./fronts/store-front:/app
       - /app/node_modules
+    env_file:
+      - '.front.env'
     environment:
       - KEYCLOAK_URL=myurl
       - KEYCLOAK_CLIENT=myclient
