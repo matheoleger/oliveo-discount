@@ -7,6 +7,9 @@ import { ReactKeycloakProvider } from "@react-keycloak/web";
 import { Navbar } from "./components/Navbar/Navbar";
 import { oliveoTheme } from "./styles";
 
+import '@fontsource/poppins/400.css'
+import '@fontsource/poppins/700.css'
+
 function App() {
   console.log(import.meta.env);
   const maVariable = import.meta.env.KEYCLOAK_CLIENT;

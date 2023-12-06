@@ -26,8 +26,8 @@ const MainElement = () => {
     return (
         <Flex alignItems={"center"}>
             <Searchbar/>
-            <Avatar name="Mathéo LEGER" margin={"0 20px"} bgColor="brand.secondary"/>
-            <IconButton colorScheme="none" aria-label="Show Cart" icon={<ShoppingCart width={30} height={30}/>}/>
+            <Avatar name="Mathéo LEGER" margin={"0 20px"} bgColor="brand.secondary" _hover={{cursor: "pointer"}} title={"Votre compte"}/>
+            <IconButton colorScheme="none" aria-label="Show Cart" icon={<ShoppingCart width={30} height={30}/>} title={"Votre panier"} border="none"/>
         </Flex>
     )
 }

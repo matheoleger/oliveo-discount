@@ -7,6 +7,7 @@ type Product = {
     id: string
     name: string
     description: string
+    imagePath: string
     price: number
     discountPrice?: number
     stock: number

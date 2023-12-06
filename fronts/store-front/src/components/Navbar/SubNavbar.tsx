@@ -4,18 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const SubNavbar = () => {
-  // const categories = [
-	// 	{
-	// 		id: "",
-	// 		name: "Informatiques",
-	// 	}
-    
-  //   "Jeux vidéos",
-  //   "Livres",
-  //   "Fleurs",
-  //   "Electroménager",
-  // ];
-
 	const [categories, setCategories] = useState<Category[]>([]);
 
 	const getCategory = async () => {
