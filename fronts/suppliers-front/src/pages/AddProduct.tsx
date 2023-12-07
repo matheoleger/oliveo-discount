@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Card,
   Flex,
   FormControl,
   FormHelperText,
@@ -8,6 +9,7 @@ import {
   Image as ImageComp,
   Input,
   Modal,
+  ModalOverlay,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -21,16 +23,15 @@ import {
 }
  from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Image as ImageIcon, Plus } from 'react-feather';
 import { Category, Product } from '../utils/types';
 import PreviewModalContent from '../components/PreviewModalContent';
 import { useKeycloak } from '@react-keycloak/web';
 import ModalSuccess from '../components/ModalSuccess';
 import { useNavigate } from 'react-router-dom';
+import { addProduct, getCategories } from '../CRUD/product';
 
 
-const api = 'http://localhost:3500/api';
 const AddProduct = () => {
   // TODO : refactoriser cette page
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,9 +39,10 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const [isCreated, setCreated] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [displayDiscountPrice, setDisplayDiscountPrice] = useState(false);
   const [newProduct, setNewProduct] = useState<Product>({
     name: '',
-    imgLink: '',
+    imagePath: '',
     stock: 0,
     categoryId: '',
     description: '',
@@ -54,14 +56,14 @@ const AddProduct = () => {
 
   
 
-  const getCategories = async () => {
-    const categoriesResp = await axios.get(`${api}/Categories`);
-    setCategories(categoriesResp.data);
-    setNewProduct({...newProduct, categoryId: categoriesResp.data[0].id})
+  const getAllCategories = async () => {
+    const res = await getCategories();
+    setCategories(res!.categories);
+    setNewProduct({...newProduct, categoryId: res!.categories[0].id})
   };
 
   useEffect(() => {
-    getCategories();
+    getAllCategories();
   }, []);
 
 
@@ -118,19 +120,20 @@ const AddProduct = () => {
 
   const onValidate = async () => {
     const supplierId = keycloak.idTokenParsed?.sub;
-    setNewProduct({...newProduct, supplierId});
-
-    await axios.post(`${api}/Products`, newProduct).then((res)=> {
-      if(res.status === 201){
+    const productToAdd = newProduct;
+    productToAdd.supplierId = supplierId;
+    await addProduct(productToAdd).then((res)=> {
+      if(res && res.status === 201){
         setCreated(true);
       }
     });
   }
 
   const resetForm = () => {
+    setCreated(false);
     setNewProduct({
       name: '',
-      imgLink: '',
+      imagePath: '',
       stock: 0,
       categoryId: '',
       description: '',
@@ -147,27 +150,28 @@ const AddProduct = () => {
       <Flex
         flexDirection={'row'}
         gap={10}
-        alignItems={'center'}
+        alignItems={'start'}
         justifyContent={'space-around'}
       >
-        <Flex
-          w={'460px'}
-          h={'460px'}
+        <Card
+          width={'450px'}
+          height={'450px'}
           backgroundColor={theme.colors.white}
           alignItems={'center'}
           justifyContent={'center'}
-          padding={10}
-          borderRadius={'20px'}
-          boxShadow="0px 0px 25px 2px rgba(0, 0, 0, 0.10)"
         >
-          <Box>
-            {!errors.imgLink && newProduct.imgLink.length !== 0 ? (
-              <ImageComp src={newProduct.imgLink} w={'xl'}></ImageComp>
+            {!errors.imgLink && newProduct.imagePath.length !== 0 ? (
+              <ImageComp src={newProduct.imagePath} w={'xl'} objectFit={'cover'} width={'460'} borderRadius={'var(--card-radius)'}
+              height={'460'}></ImageComp>
             ) : (
-              <ImageIcon size={'150'} />
+              <Flex
+                alignItems={'center'}
+                justifyContent={'center'}
+              >
+                <ImageIcon size={'150'} />
+              </Flex>
             )}
-          </Box>
-        </Flex>
+        </Card>
         <Flex flexDirection={'column'} width={'lg'} gap={5}>
           <FormControl isRequired isInvalid={errors.name}>
             <FormLabel>Nom du produit</FormLabel>
@@ -194,14 +198,14 @@ const AddProduct = () => {
             {errors.description && <FormHelperText textAlign={'start'} color={'red'}>La description est requis.</FormHelperText>}
           </FormControl>
 
-          <FormControl isRequired isInvalid={errors.imgLink}>
+          <FormControl isInvalid={errors.imgLink}>
             <FormLabel>Lien de l'image</FormLabel>
             <Input
               type="text"
-              value={newProduct.imgLink}
+              value={newProduct.imagePath}
               backgroundColor={theme.colors.white}
               onChange={(e) => {
-                setNewProduct({ ...newProduct, imgLink: e.target.value });
+                setNewProduct({ ...newProduct, imagePath: e.target.value });
                 checkImage(e.target.value);
               }}
             />
@@ -268,6 +272,36 @@ const AddProduct = () => {
               </NumberInput>
             </FormControl>
           </Flex>
+          <Flex alignItems={'end'} gap={'2'}>
+          {displayDiscountPrice && <FormControl size={'10'}>
+              <FormLabel>Prix soldé</FormLabel>
+              <NumberInput
+                backgroundColor={theme.colors.white}
+                defaultValue={newProduct.discountPrice}
+                precision={2}
+                min={0.01}
+                step={0.5}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, discountPrice: parseFloat(e) })
+                }
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>}
+
+          <Button 
+            backgroundColor='blue'
+            onClick={()=>
+              {
+                displayDiscountPrice && setNewProduct({...newProduct, discountPrice: undefined})
+                setDisplayDiscountPrice(!displayDiscountPrice);
+              }
+              }>{!displayDiscountPrice ? "Ajouter un prix soldé" : "Supprimer"}</Button>
+            </Flex>
 
           <Button
             width={'xs'}
@@ -282,10 +316,11 @@ const AddProduct = () => {
         </Flex>
       </Flex>
       <Modal onClose={!isCreated ? onClose : () => navigate('/')} size={'xl'} isOpen={isOpen}>
+        <ModalOverlay/>
         {!isCreated ? 
           <PreviewModalContent product={newProduct} onClose={onClose} onValidate={onValidate}/>
           :
-          <ModalSuccess onClose={()=>navigate('/')} onReset={resetForm}/>
+          <ModalSuccess onClose={()=>navigate('/products')} onReset={resetForm}/>
         }
       </Modal>
     </Box>

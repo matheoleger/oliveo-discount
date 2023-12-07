@@ -19,7 +19,7 @@ namespace catalog_api.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(Guid? categoryId, bool? getCategory)
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts(Guid? categoryId, Guid? supplierId, bool? getCategory)
         {
           if (_context.Products == null)
           {
@@ -30,6 +30,11 @@ namespace catalog_api.Controllers
             _context.Products.Where(product => product.CategoryId == categoryId).ToList()
             :
             await _context.Products.ToListAsync();
+
+            if(supplierId != null)
+            {
+                products = products.Where(product => product.SupplierId == supplierId).ToList();
+            }
 
             if (getCategory == true)
                 products.ForEach(product => product.Category = _context.Categories.Find(product.CategoryId));

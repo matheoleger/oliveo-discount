@@ -7,6 +7,7 @@ import NotAuthorized from './pages/NotAuthorized';
 import Loader from './components/Loader';
 import AddProduct from './pages/AddProduct';
 import NotLoggedIn from './pages/NotLoggedIn';
+import AllProducts from './pages/AllProducts';
 
 const PrivateRoute = ({ children } : {children : ReactNode}) => {
     const { keycloak } = useKeycloak();
@@ -36,6 +37,9 @@ export function AppRoutes() {
             </PrivateRoute>} />
             <Route path="/addproduct" element={<PrivateRoute>
                 <AddProduct/>
+            </PrivateRoute>} />
+            <Route path="/products" element={<PrivateRoute>
+                <AllProducts/>
             </PrivateRoute>} />
         </Routes>
     );

@@ -1,4 +1,4 @@
-import { Flex, Text, theme } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
 interface InfoNumberLineProps {
     entity: 'price' | 'stock',
@@ -9,15 +9,15 @@ interface InfoNumberLineProps {
 const InfoNumberLine = ({entity, unit, oldUnit}: InfoNumberLineProps) => {
     // Todo : styliser
     return (
-        <Flex direction={'column'} justifyContent={'space-between'}>
-            <Text fontSize={'xl'}>{entity === 'price' ? 'Prix' : 'Stock'}</Text>
-            <Flex direction={'row'} justifyContent={'space-between'}>
+        <Flex direction={'column'} justifyContent={'space-between'} minWidth={'100px'}>
+            <Text fontSize={'xl'} textAlign={'start'}>{entity === 'price' ? 'Prix' : 'Stock'}</Text>
+            <Flex direction={'row'} alignItems={'start'}>
                 {entity === 'price' && oldUnit && (
-                <Text as='s' color={theme.colors.red} fontSize={'3xl'}>
-                    {oldUnit}
+                <Text as='s' color={'red'} fontSize={'3xl'} marginRight={'5px'} textAlign={'start'}>
+                    {oldUnit}€
                 </Text>)}
-                <Text fontSize={'3xl'}>
-                    {unit}{entity === 'price' ? '€' : 'Unités' }
+                <Text fontSize={'3xl'} textAlign={'start'}>
+                    {unit}{entity === 'price' && '€'}
                 </Text>
             </Flex>
         </Flex>
