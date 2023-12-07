@@ -1,11 +1,9 @@
 import { Box, Button, Text } from "@chakra-ui/react"
-import keycloak from "../KeycloakClient"
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 
 const HomePage = () => {
-    const { keycloak, initialized } = useKeycloak();
+    const { keycloak } = useKeycloak();
+    // TODO : styliser cette page avec une image storyset
     return (
         <Box>
             <Text>

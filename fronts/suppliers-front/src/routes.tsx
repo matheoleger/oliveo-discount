@@ -3,14 +3,28 @@ import HomePage from './pages/Home';
 import { useKeycloak } from '@react-keycloak/web';
 import { ReactNode } from 'react';
 import ProfilePage from './pages/Profile';
+import NotAuthorized from './pages/NotAuthorized';
+import Loader from './components/Loader';
+import AddProduct from './pages/AddProduct';
+import NotLoggedIn from './pages/NotLoggedIn';
 
 const PrivateRoute = ({ children } : {children : ReactNode}) => {
     const { keycloak } = useKeycloak();
-   
-    const isLoggedIn = keycloak.authenticated;
-   
-    return isLoggedIn ? children : null;
-   };
+
+    if(keycloak.authenticated === undefined){
+        return Loader();
+    }
+
+    if(keycloak.authenticated != true) {
+        return NotLoggedIn(keycloak);
+    }     
+
+    if(keycloak.hasRealmRole('supplier')) {
+        return NotAuthorized();
+    }
+
+    return children;
+};
 
 export function AppRoutes() {
     
@@ -19,6 +33,9 @@ export function AppRoutes() {
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<PrivateRoute>
                 <ProfilePage/>
+            </PrivateRoute>} />
+            <Route path="/addproduct" element={<PrivateRoute>
+                <AddProduct/>
             </PrivateRoute>} />
         </Routes>
     );
