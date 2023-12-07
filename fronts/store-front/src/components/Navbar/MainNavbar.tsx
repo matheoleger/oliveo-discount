@@ -1,12 +1,16 @@
-import { Avatar, Flex, IconButton } from "@chakra-ui/react";
+import { Avatar, Box, Flex, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { ShoppingCart } from "react-feather";
 
 import { LogoWithText } from "../../assets/svg/LogoWithText";
 import { Searchbar } from "./Searchbar";
+import { useNavigate } from "react-router-dom";
 
 
 export const MainNavbar = () => {
+
+    const navigate = useNavigate();
+
     return (
         <Flex
             as="nav"
@@ -16,7 +20,9 @@ export const MainNavbar = () => {
             w="100%"
             padding={"20px 70px"}
         >
-            <LogoWithText/>
+            <Box _hover={{cursor: "pointer"}} onClick={() => navigate("/")}>
+                <LogoWithText />
+            </Box>
             <MainElement/>
         </Flex>
     )
