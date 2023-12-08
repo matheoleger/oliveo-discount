@@ -79,9 +79,18 @@ const ProductViewPage = () => {
         <Text>{product?.category?.name}</Text>
         <Heading>{product?.name}</Heading>
         <Text>by {product?.supplierId}</Text>
-        <Heading marginY={5} color={"brand.secondary"}>
+        {/* <Heading marginY={5} color={"brand.secondary"}>
           {product?.price}€
-        </Heading>
+        </Heading> */}
+        {
+          product?.discountPrice  ?
+          <>
+              <Heading marginY={5} as="s" color={"brand.primary"}>{product?.price}€</Heading>
+              <Heading marginY={5}>{product?.discountPrice}€</Heading>
+          </>
+          :
+          <Heading marginY={5} color={"brand.secondary"}>{product?.price}€</Heading>
+        }
         <Tabs variant="unstyled" minHeight={280} maxHeight={280} minWidth={600}>
           <TabList>
             <Tab {...TabStyle}>Description</Tab>
@@ -122,7 +131,7 @@ const ProductViewPage = () => {
           >
             {product?.stock && product?.stock > 100
               ? "En stock"
-              : "Plus que 100 exemplaires"}
+              : product?.stock != 0 ? `Plus que ${product?.stock} exemplaires` : "Rupture de stock"}
           </Text>
         </Flex>
       </Box>

@@ -38,11 +38,11 @@ export const CartItem = ({cartProduct, setProducts}: Props) => {
                     {
                         cartProduct.discountPrice  ?
                         <>
-                            <Text as="s" color={"brand.secondary"} marginTop={2}>{cartProduct.price}€</Text>
-                            <Text color={"brand.secondary"} marginTop={2}>{cartProduct.discountPrice}€</Text>
+                            <Text as="s" color={"brand.primary"} marginTop={2}>{cartProduct.price}€</Text>
+                            <Text marginTop={2}>{cartProduct.discountPrice}€</Text>
                         </>
                         :
-                        <Text color={"brand.secondary"} marginTop={2}>{cartProduct.price}€</Text>
+                        <Text marginTop={2}>{cartProduct.price}€</Text>
                     }
                 </Box>
             </Flex>
