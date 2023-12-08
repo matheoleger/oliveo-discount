@@ -13,7 +13,7 @@ export const ProductCard = ({product}:{product: Product}) => {
                 <Text fontSize={22} margin={"20px 0 0 0"} noOfLines={2}>{product.name}</Text>
                 <Rating rating={product.rating}/>
                 <Divider margin={"15px 0"}/>
-                <Flex gap={10}>
+                <Flex gap={5}>
                     {
                         product.discountPrice ?
                         <>

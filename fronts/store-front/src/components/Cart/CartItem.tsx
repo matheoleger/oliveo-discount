@@ -35,6 +35,7 @@ export const CartItem = ({cartProduct, setProducts}: Props) => {
                 }
                 <Box>
                     <Heading size={"md"}>{cartProduct.name}</Heading>
+                    <Flex gap={5}>
                     {
                         cartProduct.discountPrice  ?
                         <>
@@ -44,6 +45,8 @@ export const CartItem = ({cartProduct, setProducts}: Props) => {
                         :
                         <Text marginTop={2}>{cartProduct.price}€</Text>
                     }
+                    </Flex>
+
                 </Box>
             </Flex>
 

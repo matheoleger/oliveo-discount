@@ -82,7 +82,7 @@ const ProductViewPage = () => {
         {/* <Heading marginY={5} color={"brand.secondary"}>
           {product?.price}€
         </Heading> */}
-        <Flex gap={10}>
+        <Flex gap={5}>
           {
             product?.discountPrice  ?
             <>
