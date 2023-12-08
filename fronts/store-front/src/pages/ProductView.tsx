@@ -30,7 +30,7 @@ const ProductViewPage = () => {
   };
 
   const addToCart = () => {
-    const cartProducts = getProductsLocalStorage() ?? [];
+    const cartProducts = getProductsLocalStorage();
 
     if(!product)
       return;
