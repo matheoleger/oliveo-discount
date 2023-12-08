@@ -82,15 +82,18 @@ const ProductViewPage = () => {
         {/* <Heading marginY={5} color={"brand.secondary"}>
           {product?.price}€
         </Heading> */}
-        {
-          product?.discountPrice  ?
-          <>
-              <Heading marginY={5} as="s" color={"brand.primary"}>{product?.price}€</Heading>
-              <Heading marginY={5}>{product?.discountPrice}€</Heading>
-          </>
-          :
-          <Heading marginY={5} color={"brand.secondary"}>{product?.price}€</Heading>
-        }
+        <Flex gap={10}>
+          {
+            product?.discountPrice  ?
+            <>
+                <Heading marginY={5} as="s" color={"brand.primary"}>{product?.price}€</Heading>
+                <Heading marginY={5}>{product?.discountPrice}€</Heading>
+            </>
+            :
+            <Heading marginY={5} color={"brand.secondary"}>{product?.price}€</Heading>
+          }
+        </Flex>
+
         <Tabs variant="unstyled" minHeight={280} maxHeight={280} minWidth={600}>
           <TabList>
             <Tab {...TabStyle}>Description</Tab>
