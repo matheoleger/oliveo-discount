@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getProductsLocalStorage, setProductsLocalStorage } from "../utils";
 
 const ProductViewPage = () => {
   const { id } = useParams();
@@ -27,6 +28,25 @@ const ProductViewPage = () => {
     );
     setProduct(categoryResp.data);
   };
+
+  const addToCart = () => {
+    const cartProducts = getProductsLocalStorage() ?? [];
+
+    if(!product)
+      return;
+
+    const cartProduct: CartProduct = {
+      id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      discountPrice: product?.discountPrice,
+      imagePath: product?.imagePath
+    }
+
+    cartProducts.push(cartProduct);
+
+    setProductsLocalStorage(cartProducts);
+  }
 
   useEffect(() => {
     getProduct();
@@ -78,6 +98,7 @@ const ProductViewPage = () => {
             backgroundColor={"brand.dark"}
             color={"brand.light"}
             _hover={{color: "brand.primary"}}
+            onClick={addToCart}
           >
             Ajouter au panier
           </Button>
