@@ -11,6 +11,7 @@ import {
   TabPanels,
   TabPanel,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { getProductsLocalStorage, setProductsLocalStorage } from "../utils";
 
 const ProductViewPage = () => {
+  const toast = useToast();
   const { id } = useParams();
 
   const [product, setProduct] = useState<Product>();
@@ -46,6 +48,15 @@ const ProductViewPage = () => {
     cartProducts.push(cartProduct);
 
     setProductsLocalStorage(cartProducts);
+
+    toast({
+      title: 'Produit ajouté.',
+      description: "Le produit a bien été ajouté au panier.",
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+      position: 'bottom-right',
+    })
   }
 
   useEffect(() => {
@@ -71,7 +82,7 @@ const ProductViewPage = () => {
         <Heading marginY={5} color={"brand.secondary"}>
           {product?.price}€
         </Heading>
-        <Tabs variant="unstyled" minHeight={400} maxHeight={400} minWidth={600}>
+        <Tabs variant="unstyled" minHeight={280} maxHeight={280} minWidth={600}>
           <TabList>
             <Tab {...TabStyle}>Description</Tab>
             <Tab {...TabStyle}>Reviews</Tab>
