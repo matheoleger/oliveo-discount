@@ -7,13 +7,12 @@ interface InfoNumberLineProps {
 }
 
 const InfoNumberLine = ({entity, unit, oldUnit}: InfoNumberLineProps) => {
-    // Todo : styliser
     return (
         <Flex direction={'column'} justifyContent={'space-between'} minWidth={'100px'}>
             <Text fontSize={'xl'} textAlign={'start'}>{entity === 'price' ? 'Prix' : 'Stock'}</Text>
             <Flex direction={'row'} alignItems={'start'}>
                 {entity === 'price' && oldUnit && (
-                <Text as='s' color={'red'} fontSize={'3xl'} marginRight={'5px'} textAlign={'start'}>
+                <Text as='s' color={'brand.primary'} fontSize={'3xl'} marginRight={'5px'} textAlign={'start'}>
                     {oldUnit}€
                 </Text>)}
                 <Text fontSize={'3xl'} textAlign={'start'}>

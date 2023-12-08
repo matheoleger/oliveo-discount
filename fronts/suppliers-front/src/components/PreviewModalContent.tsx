@@ -3,7 +3,6 @@ import { Product } from "../utils/types";
 import ProductOverview from "./ProductOverview";
 
 const PreviewModalContent = ({product, onClose, onValidate}: {product: Product, onClose: Function, onValidate: Function}) => {
-  // TODO : refacto + style de la carte
     return (
       <ModalContent>
         <ModalHeader>Récapitulatif du produit</ModalHeader>

@@ -11,13 +11,6 @@ import '@fontsource/poppins/400.css'
 import '@fontsource/poppins/700.css'
 
 function App() {
-  console.log(import.meta.env);
-  const maVariable = import.meta.env.KEYCLOAK_CLIENT;
-  console.log(maVariable);
-  console.log(process.env);
-  // console.log(import.meta.env.KEYCLOAK_CLIENT)
-  // console.log(import.meta.env.KEYCLOAK_REALM)
-  // console.log(import.meta.env.KEYCLOAK_URL)
 
   const theme = extendTheme(oliveoTheme)
 

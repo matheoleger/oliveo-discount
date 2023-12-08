@@ -20,7 +20,7 @@ const PrivateRoute = ({ children } : {children : ReactNode}) => {
         return NotLoggedIn(keycloak);
     }     
 
-    if(keycloak.hasRealmRole('supplier')) {
+    if(keycloak.hasRealmRole('supplier') === false) {
         return NotAuthorized();
     }
 

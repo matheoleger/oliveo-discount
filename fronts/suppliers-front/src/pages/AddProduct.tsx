@@ -6,6 +6,8 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Heading,
+  IconButton,
   Image as ImageComp,
   Input,
   Modal,
@@ -16,14 +18,12 @@ import {
   NumberInputField,
   NumberInputStepper,
   Select,
-  Text,
   Textarea,
-  theme,
   useDisclosure
 }
  from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Image as ImageIcon, Plus } from 'react-feather';
+import { ArrowLeft, Image as ImageIcon, Plus } from 'react-feather';
 import { Category, Product } from '../utils/types';
 import PreviewModalContent from '../components/PreviewModalContent';
 import { useKeycloak } from '@react-keycloak/web';
@@ -143,10 +143,16 @@ const AddProduct = () => {
   }
 
   return (
-    <Box padding={1}>
-      <Text mb={30} size={'xl'} textAlign={'start'}>
-        Ajouter un produit
-      </Text>
+    <Box padding={5}>
+      <Flex gap={5}>
+        <IconButton aria-label='Arrow-Left' onClick={()=> navigate('/products')} backgroundColor={'brand.secondary'}>
+          <ArrowLeft/>
+        </IconButton>
+        <Heading mb={30} size={'xl'} textAlign={'start'}>
+          Ajouter un produit
+        </Heading>
+      </Flex>
+      
       <Flex
         flexDirection={'row'}
         gap={10}
@@ -156,7 +162,7 @@ const AddProduct = () => {
         <Card
           width={'450px'}
           height={'450px'}
-          backgroundColor={theme.colors.white}
+          backgroundColor={'white'}
           alignItems={'center'}
           justifyContent={'center'}
         >
@@ -172,30 +178,30 @@ const AddProduct = () => {
               </Flex>
             )}
         </Card>
-        <Flex flexDirection={'column'} width={'lg'} gap={5}>
+        <Flex flexDirection={'column'} width={'lg'} gap={3}>
           <FormControl isRequired isInvalid={errors.name}>
             <FormLabel>Nom du produit</FormLabel>
             <Input
-              backgroundColor={theme.colors.white}
+              backgroundColor={'white'}
               type="text"
               value={newProduct.name}
               onChange={(e) =>
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
             />
-            {errors.name && <FormHelperText textAlign={'start'} color={'red'}>Le nom est requis.</FormHelperText>}
+            {errors.name && <FormHelperText textAlign={'start'} color={'brand.primary'}>Le nom est requis.</FormHelperText>}
           </FormControl>
 
           <FormControl isRequired isInvalid={errors.description}>
             <FormLabel>Description</FormLabel>
             <Textarea
-              backgroundColor={theme.colors.white}
+              backgroundColor={'white'}
               value={newProduct.description}
               onChange={(e) =>
                 setNewProduct({ ...newProduct, description: e.target.value })
               }
             ></Textarea>
-            {errors.description && <FormHelperText textAlign={'start'} color={'red'}>La description est requis.</FormHelperText>}
+            {errors.description && <FormHelperText textAlign={'start'} color={'brand.primary'}>La description est requis.</FormHelperText>}
           </FormControl>
 
           <FormControl isInvalid={errors.imgLink}>
@@ -203,13 +209,13 @@ const AddProduct = () => {
             <Input
               type="text"
               value={newProduct.imagePath}
-              backgroundColor={theme.colors.white}
+              backgroundColor={'white'}
               onChange={(e) => {
                 setNewProduct({ ...newProduct, imagePath: e.target.value });
                 checkImage(e.target.value);
               }}
             />
-            {errors.imgLink && <FormHelperText textAlign={'start'} color={'red'}>Le lien de l'image est incorrect.</FormHelperText>}
+            {errors.imgLink && <FormHelperText textAlign={'start'} color={'brand.primary'}>Le lien de l'image est incorrect.</FormHelperText>}
           </FormControl>
 
           <FormControl isRequired>
@@ -219,7 +225,7 @@ const AddProduct = () => {
               onChange={(e) =>
                 setNewProduct({ ...newProduct, categoryId: e.target.value })
               }
-              backgroundColor={theme.colors.white}
+              backgroundColor={'white'}
             >
               {categories.length > 0 &&
                 categories.map((category, index) => {
@@ -236,7 +242,7 @@ const AddProduct = () => {
             <FormControl isRequired>
               <FormLabel>Prix</FormLabel>
               <NumberInput
-                backgroundColor={theme.colors.white}
+                backgroundColor={'white'}
                 defaultValue={newProduct.price}
                 precision={2}
                 min={0.01}
@@ -256,7 +262,7 @@ const AddProduct = () => {
             <FormControl isRequired>
               <FormLabel>Stock disponible</FormLabel>
               <NumberInput
-                backgroundColor={theme.colors.white}
+                backgroundColor={'white'}
                 value={newProduct.stock}
                 step={1}
                 min={0}
@@ -276,7 +282,7 @@ const AddProduct = () => {
           {displayDiscountPrice && <FormControl size={'10'}>
               <FormLabel>Prix soldé</FormLabel>
               <NumberInput
-                backgroundColor={theme.colors.white}
+                backgroundColor={'white'}
                 defaultValue={newProduct.discountPrice}
                 precision={2}
                 min={0.01}
@@ -294,7 +300,8 @@ const AddProduct = () => {
             </FormControl>}
 
           <Button 
-            backgroundColor='blue'
+            backgroundColor={displayDiscountPrice ? 'brand.primary' : 'brand.secondary'}
+            color={'brand.light'}
             onClick={()=>
               {
                 displayDiscountPrice && setNewProduct({...newProduct, discountPrice: undefined})
@@ -305,10 +312,9 @@ const AddProduct = () => {
 
           <Button
             width={'xs'}
-            mt={5}
             onClick={handleClick}
-            backgroundColor={theme.colors.black}
-            color={theme.colors.white}
+            backgroundColor={'brand.dark'}
+            color={'brand.light'}
             rightIcon={<Plus></Plus>}
           >
             Ajouter
