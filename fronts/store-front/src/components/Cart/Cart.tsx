@@ -22,7 +22,7 @@ export const Cart = ({isOpen}:{isOpen: boolean}) => {
                     products &&
                     products.map(product => (
                         <>
-                            <CartItem carProduct={product}/>
+                            <CartItem cartProduct={product} setProducts={setProducts}/>
                             <Divider/>
                         </>
                     ))

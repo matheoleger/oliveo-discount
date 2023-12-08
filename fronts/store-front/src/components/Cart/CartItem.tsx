@@ -1,25 +1,53 @@
-import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react"
+import { SmallCloseIcon } from "@chakra-ui/icons"
+import { Box, Flex, Heading, IconButton, Image, Text } from "@chakra-ui/react"
+import { getProductsLocalStorage, setProductsLocalStorage } from "../../utils"
+
+import { Image as ImageIcon } from "react-feather"
 
 type Props = {
-    carProduct: CartProduct
+    cartProduct: CartProduct
+    setProducts: Function
 }
 
-export const CartItem = ({carProduct}: Props) => {
+export const CartItem = ({cartProduct, setProducts}: Props) => {
+
+    const removeCartProduct = () => {
+        const cartProducts = getProductsLocalStorage();
+
+        const indexToRemove = cartProducts.findIndex(p => p.id === cartProduct.id)
+        
+        // cartProducts.filter(product => cartProduct.id != product.id);
+
+        cartProducts.splice(indexToRemove, 1);
+        
+        setProductsLocalStorage(cartProducts);
+        setProducts(cartProducts)
+    }
+
     return (
-        <Flex gap={10} marginY={5}>
-            <Image src={carProduct.imagePath} width={100} height={100} objectFit={"cover"}/>
-            <Box>
-                <Heading size={"md"}>{carProduct.name}</Heading>
+        <Flex gap={10} marginY={5}justifyContent={"space-between"}>
+            <Flex gap={10} marginY={5}>
                 {
-                    carProduct.discountPrice  ?
-                    <>
-                        <Text as="s" color={"brand.secondary"} marginTop={2}>{carProduct.price}€</Text>
-                        <Text color={"brand.secondary"} marginTop={2}>{carProduct.discountPrice}€</Text>
-                    </>
+                    cartProduct.imagePath ? 
+                    <Image src={cartProduct.imagePath } width={100} height={100} objectFit={"cover"}/>
                     :
-                    <Text color={"brand.secondary"} marginTop={2}>{carProduct.price}€</Text>
+                    <ImageIcon size={'100'} />
                 }
-            </Box>
+                <Box>
+                    <Heading size={"md"}>{cartProduct.name}</Heading>
+                    {
+                        cartProduct.discountPrice  ?
+                        <>
+                            <Text as="s" color={"brand.secondary"} marginTop={2}>{cartProduct.price}€</Text>
+                            <Text color={"brand.secondary"} marginTop={2}>{cartProduct.discountPrice}€</Text>
+                        </>
+                        :
+                        <Text color={"brand.secondary"} marginTop={2}>{cartProduct.price}€</Text>
+                    }
+                </Box>
+            </Flex>
+
+            <IconButton marginY={"auto"} aria-label={"remove product"} icon={<SmallCloseIcon />} onClick={removeCartProduct}/>
         </Flex>
     )
 }
