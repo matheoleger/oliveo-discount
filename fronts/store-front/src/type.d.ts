@@ -16,3 +16,11 @@ type Product = {
     categoryId: string
     category?: Category
 }
+
+type CartProduct = {
+    id: string
+    name: string
+    price: number
+    discountPrice?: number
+    imagePath: string
+}
