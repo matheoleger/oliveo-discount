@@ -35,7 +35,7 @@ export function AppRoutes() {
             <Route path="/profile" element={<PrivateRoute>
                 <ProfilePage/>
             </PrivateRoute>} />
-            <Route path="/addproduct" element={<PrivateRoute>
+            <Route path="/addproduct/:id?" element={<PrivateRoute>
                 <AddProduct/>
             </PrivateRoute>} />
             <Route path="/products" element={<PrivateRoute>

@@ -1,19 +1,15 @@
-import { Avatar, Box, Button, Flex, IconButton } from "@chakra-ui/react";
-import { ShoppingCart } from "react-feather";
+import { Avatar, Box, Button, Flex, Text } from "@chakra-ui/react";
 
-import { LogoWithText } from "../../assets/svg/LogoWithText";
+import { LogoWithText } from "../assets/svg/LogoWithText";
 import { useNavigate } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import { useEffect, useState } from "react";
 
-
-export const MainNavbar = () => {
-    
-
+export const Navbar = () => {
     const navigate = useNavigate();
-
     return (
-        <Flex
+        <Box as="nav" width={"100vw"} backgroundColor="brand.dark">
+            <Flex
             as="nav"
             align="center"
             justify="space-between"
@@ -24,8 +20,12 @@ export const MainNavbar = () => {
             <Box _hover={{cursor: "pointer"}} onClick={() => navigate("/")}>
                 <LogoWithText />
             </Box>
+            <Text color={'brand.light'} fontSize={'md'}>
+                Plateforme Fournisseurs
+            </Text>
             <MainElement/>
         </Flex>
+        </Box>
     )
 }
 
@@ -58,7 +58,6 @@ const MainElement = () => {
                    </Button>
                  }
             {keycloak.authenticated && <Avatar name={fullName} margin={"0 20px"} bgColor="brand.secondary" _hover={{cursor: "pointer"}} title={"Votre compte"}/>}
-            <IconButton colorScheme="none" aria-label="Show Cart" icon={<ShoppingCart width={30} height={30}/>} title={"Votre panier"} border="none"/>
         </Flex>
     )
 }

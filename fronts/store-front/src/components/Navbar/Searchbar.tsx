@@ -1,5 +1,5 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { IconButton, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import React from 'react';
 import { oliveoTheme } from '../../styles';
 

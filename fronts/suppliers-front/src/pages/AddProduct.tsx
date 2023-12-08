@@ -28,12 +28,13 @@ import { Category, Product } from '../utils/types';
 import PreviewModalContent from '../components/PreviewModalContent';
 import { useKeycloak } from '@react-keycloak/web';
 import ModalSuccess from '../components/ModalSuccess';
-import { useNavigate } from 'react-router-dom';
-import { addProduct, getCategories } from '../CRUD/product';
+import { useNavigate, useParams } from 'react-router-dom';
+import { addProduct, getCategories, getProductById, updateProduct } from '../axios/product';
 
 
 const AddProduct = () => {
   // TODO : refactoriser cette page
+  const { id } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
@@ -54,7 +55,23 @@ const AddProduct = () => {
     description: false,
   });
 
-  
+  const getProduct = async () => {
+    if(id){
+      const res = await getProductById(id);
+      const product = res!.product;
+      setNewProduct({
+        name: product.name,
+        categoryId: product.categoryId,
+        description: product.description,
+        imagePath: product.imagePath,
+        price: product.price,
+        stock: product.stock,
+        discountPrice: product.discountPrice,
+        id: product.id,
+        supplierId: product.supplierId
+        });
+    }
+  }
 
   const getAllCategories = async () => {
     const res = await getCategories();
@@ -64,9 +81,8 @@ const AddProduct = () => {
 
   useEffect(() => {
     getAllCategories();
+    getProduct();
   }, []);
-
-
 
   const handleClick = () => {
     const errorsFound = {
@@ -76,7 +92,7 @@ const AddProduct = () => {
     }
 
     if (newProduct.name.length < 1) {
-      errorsFound.name = true;     
+      errorsFound.name = true;
     }
 
     if (newProduct.description.length < 1) {
@@ -122,14 +138,26 @@ const AddProduct = () => {
     const supplierId = keycloak.idTokenParsed?.sub;
     const productToAdd = newProduct;
     productToAdd.supplierId = supplierId;
-    await addProduct(productToAdd).then((res)=> {
-      if(res && res.status === 201){
-        setCreated(true);
-      }
-    });
+    if(!id){
+      await addProduct(productToAdd).then((res)=> {
+        if(res && res.status === 201){
+          setCreated(true);
+        }
+      });
+    } else {
+      await updateProduct(productToAdd).then((res)=> {
+        if(res && res.status === 204){
+          setCreated(true);
+        } 
+      });
+    }
+   
   }
 
   const resetForm = () => {
+    if(id) {
+      navigate('/addproduct');
+    }
     setCreated(false);
     setNewProduct({
       name: '',
@@ -149,7 +177,7 @@ const AddProduct = () => {
           <ArrowLeft/>
         </IconButton>
         <Heading mb={30} size={'xl'} textAlign={'start'}>
-          Ajouter un produit
+          {id ? 'Modifier' : 'Ajouter'} un produit
         </Heading>
       </Flex>
       
@@ -170,12 +198,7 @@ const AddProduct = () => {
               <ImageComp src={newProduct.imagePath} w={'xl'} objectFit={'cover'} width={'460'} borderRadius={'var(--card-radius)'}
               height={'460'}></ImageComp>
             ) : (
-              <Flex
-                alignItems={'center'}
-                justifyContent={'center'}
-              >
                 <ImageIcon size={'150'} />
-              </Flex>
             )}
         </Card>
         <Flex flexDirection={'column'} width={'lg'} gap={3}>
@@ -243,7 +266,8 @@ const AddProduct = () => {
               <FormLabel>Prix</FormLabel>
               <NumberInput
                 backgroundColor={'white'}
-                defaultValue={newProduct.price}
+                value={newProduct.price}
+                defaultValue={'0.01'}
                 precision={2}
                 min={0.01}
                 step={0.5}
@@ -283,7 +307,8 @@ const AddProduct = () => {
               <FormLabel>Prix soldé</FormLabel>
               <NumberInput
                 backgroundColor={'white'}
-                defaultValue={newProduct.discountPrice}
+                value={newProduct.discountPrice}
+                defaultValue={'0.01'}
                 precision={2}
                 min={0.01}
                 step={0.5}
@@ -317,7 +342,7 @@ const AddProduct = () => {
             color={'brand.light'}
             rightIcon={<Plus></Plus>}
           >
-            Ajouter
+            {id ? 'Modifier' : 'Ajouter'}
           </Button>
         </Flex>
       </Flex>
@@ -326,7 +351,7 @@ const AddProduct = () => {
         {!isCreated ? 
           <PreviewModalContent product={newProduct} onClose={onClose} onValidate={onValidate}/>
           :
-          <ModalSuccess onClose={()=>navigate('/products')} onReset={resetForm}/>
+          <ModalSuccess onClose={()=>navigate('/products')} onReset={resetForm} modified={!!id}/>
         }
       </Modal>
     </Box>

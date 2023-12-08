@@ -3,7 +3,7 @@ import { useKeycloak } from "@react-keycloak/web";
 import { useEffect, useState } from "react";
 import ProductOverview from "../components/ProductOverview";
 import { Product } from "../utils/types";
-import { getProducts } from "../CRUD/product";
+import { getProducts } from "../axios/product";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "react-feather";
 
@@ -35,7 +35,7 @@ const AllProducts = () => {
             </Flex>
             <Grid templateColumns='repeat(2, 1fr)' gap={20}>
                 {products.map((product, index)=> {
-                    return (<ProductOverview key={index} product={product}/>)
+                    return (<ProductOverview key={index} product={product} modifyButton/>)
                 })}
             </Grid>
         </Box>

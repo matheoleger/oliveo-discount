@@ -2,14 +2,14 @@ import { Button, Flex, ModalBody, ModalCloseButton, ModalContent, ModalFooter, M
 import { CheckCircle } from "react-feather";
 
 
-const ModalSuccess = ({onClose, onReset}: {onClose: Function, onReset: Function}) => {
+const ModalSuccess = ({onClose, onReset, modified}: {onClose: Function, onReset: Function, modified: boolean}) => {
     return (
       <ModalContent>
         <ModalHeader>Ajout du produit</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex alignItems={'center'} direction={'column'} gap={5}>
-            <Text>Votre produit a bien été ajouté</Text>
+            <Text>Votre produit a bien été {modified ? 'modifié' : 'ajouté'}</Text>
             <CheckCircle color="green" size={'50'}></CheckCircle>
           </Flex>
         </ModalBody>

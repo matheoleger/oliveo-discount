@@ -8,13 +8,11 @@ const PreviewModalContent = ({product, onClose, onValidate}: {product: Product, 
         <ModalHeader>Récapitulatif du produit</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          
             <ProductOverview product={product}/>
-
         </ModalBody>
         <ModalFooter>
-          <Button onClick={()=>onValidate()}>Valider</Button>
-          <Button onClick={()=>onClose()}>Close</Button>
+          <Button onClick={()=>onValidate()} backgroundColor={'brand.secondary'}>Valider</Button>
+          <Button onClick={()=>onClose()} marginLeft={3} backgroundColor={'brand.primary'}>Annuler</Button>
         </ModalFooter>
       </ModalContent>
     )

@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "./routes";
 import keycloakClient from "./KeycloakClient";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
-import { Navbar } from "./components/Navbar/Navbar";
+import { Navbar } from "./components/Navbar";
 import { oliveoTheme } from "./styles";
 
 import '@fontsource/poppins/400.css'
