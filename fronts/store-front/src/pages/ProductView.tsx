@@ -11,6 +11,7 @@ import {
   TabPanels,
   TabPanel,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { getProductsLocalStorage, setProductsLocalStorage } from "../utils";
 
 const ProductViewPage = () => {
+  const toast = useToast();
   const { id } = useParams();
 
   const [product, setProduct] = useState<Product>();
@@ -46,6 +48,15 @@ const ProductViewPage = () => {
     cartProducts.push(cartProduct);
 
     setProductsLocalStorage(cartProducts);
+
+    toast({
+      title: 'Produit ajouté.',
+      description: "Le produit a bien été ajouté au panier.",
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+      position: 'bottom-right',
+    })
   }
 
   useEffect(() => {
@@ -68,10 +79,22 @@ const ProductViewPage = () => {
         <Text>{product?.category?.name}</Text>
         <Heading>{product?.name}</Heading>
         <Text>by {product?.supplierId}</Text>
-        <Heading marginY={5} color={"brand.secondary"}>
+        {/* <Heading marginY={5} color={"brand.secondary"}>
           {product?.price}€
-        </Heading>
-        <Tabs variant="unstyled" minHeight={400} maxHeight={400} minWidth={600}>
+        </Heading> */}
+        <Flex gap={5}>
+          {
+            product?.discountPrice  ?
+            <>
+                <Heading marginY={5} as="s" color={"brand.primary"}>{product?.price}€</Heading>
+                <Heading marginY={5}>{product?.discountPrice}€</Heading>
+            </>
+            :
+            <Heading marginY={5} color={"brand.secondary"}>{product?.price}€</Heading>
+          }
+        </Flex>
+
+        <Tabs variant="unstyled" minHeight={280} maxHeight={280} minWidth={600}>
           <TabList>
             <Tab {...TabStyle}>Description</Tab>
             <Tab {...TabStyle}>Reviews</Tab>
@@ -111,7 +134,7 @@ const ProductViewPage = () => {
           >
             {product?.stock && product?.stock > 100
               ? "En stock"
-              : "Plus que 100 exemplaires"}
+              : product?.stock != 0 ? `Plus que ${product?.stock} exemplaires` : "Rupture de stock"}
           </Text>
         </Flex>
       </Box>
