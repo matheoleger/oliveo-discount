@@ -27,7 +27,10 @@ const ProductOverview = ({product, modifyButton}: {product: Product, modifyButto
                 <Box>
                   <Tag textAlign={'center'} backgroundColor={'brand.primary'} color={'brand.light'}>{product.category?.name}</Tag>
                 </Box>
-                <Text fontSize={'md'} textAlign={'justify'} height={'100px'}>{product.description}</Text>
+                <Text fontSize={'md'} textAlign={'justify'} height={'100px'}
+                noOfLines={1}
+                
+                >{product.description}</Text>
               </Flex>
              {modifyButton && <IconButton aria-label="modify product" 
               backgroundColor={'brand.secondary'}
